@@ -61,7 +61,7 @@
             var EXCLUDE = exclude ? "&exclude=minutely,hourly,daily" : "";
 
             var LAT = lat ?? DefaultLattitude ?? "0";
-            var LON = lon ?? DefaultLattitude ?? "0";
+            var LON = lon ?? DefaultLongitude ?? "0";
 
             return $"https://api.openweathermap.org/data/2.5/onecall?lat={LAT}&lon={LON}{EXCLUDE}&appid={API_KEY}&lang={lang}&units={units}";
         }
