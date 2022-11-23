@@ -1,15 +1,67 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <Content Include=".git\ms-persist.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".git\COMMIT_EDITMSG" />
+    <None Include=".git\config" />
+    <None Include=".git\description" />
+    <None Include=".git\FETCH_HEAD" />
+    <None Include=".git\HEAD" />
+    <None Include=".git\hooks\applypatch-msg.sample" />
+    <None Include=".git\hooks\commit-msg.sample" />
+    <None Include=".git\hooks\fsmonitor-watchman.sample" />
+    <None Include=".git\hooks\post-update.sample" />
+    <None Include=".git\hooks\pre-applypatch.sample" />
+    <None Include=".git\hooks\pre-commit.sample" />
+    <None Include=".git\hooks\pre-merge-commit.sample" />
+    <None Include=".git\hooks\pre-push.sample" />
+    <None Include=".git\hooks\pre-rebase.sample" />
+    <None Include=".git\hooks\pre-receive.sample" />
+    <None Include=".git\hooks\prepare-commit-msg.sample" />
+    <None Include=".git\hooks\push-to-checkout.sample" />
+    <None Include=".git\hooks\update.sample" />
+    <None Include=".git\index" />
+    <None Include=".git\info\exclude" />
+    <None Include=".git\logs\HEAD" />
+    <None Include=".git\logs\refs\heads\develop" />
+    <None Include=".git\logs\refs\heads\main" />
+    <None Include=".git\logs\refs\remotes\origin\HEAD" />
+    <None Include=".git\logs\refs\remotes\origin\main" />
+    <None Include=".git\objects\0c\208ae9181e5e5717e47ec1bd59368aebc6066e" />
+    <None Include=".git\objects\10\f68b8c8b4f796baf8ddeee7551b6a52b9437cc" />
+    <None Include=".git\objects\1c\7887d851ad4be117dc8785195d22bc884c7a16" />
+    <None Include=".git\objects\21\cbb1ab9b7e02b190dda4ab6485ea0f74bfd20a" />
+    <None Include=".git\objects\31\fd2987711ad038a4392ef1edfdfa6f71bdef1a" />
+    <None Include=".git\objects\3d\1f06a31bd143ecd2d32c9e74e5744b6ea4d5de" />
+    <None Include=".git\objects\48\863a6d6cd2d107e6cb4ed88c281c131244e2f6" />
+    <None Include=".git\objects\80\7113147e3a7567b9a96240de578d226de061dd" />
+    <None Include=".git\objects\a2\f432857e4fd49a2bb8339bd516aa84a005148d" />
+    <None Include=".git\objects\c3\99e2a162d096378d4a782c6b29d30891d1e34b" />
+    <None Include=".git\objects\cd\1789896b30b368f2279d61680758f104dd9b5b" />
+    <None Include=".git\objects\f1\bdba98de2731959399ca24b36b37d7c9202fed" />
+    <None Include=".git\objects\f5\3ebf51a0b79e94ad06e21a23d728faa1d3ff95" />
+    <None Include=".git\objects\pack\pack-f1e75ba8da92da302db8a257d0c87ad3e0a29c29.idx" />
+    <None Include=".git\objects\pack\pack-f1e75ba8da92da302db8a257d0c87ad3e0a29c29.pack" />
+    <None Include=".git\ORIG_HEAD" />
+    <None Include=".git\packed-refs" />
+    <None Include=".git\refs\heads\develop" />
+    <None Include=".git\refs\heads\main" />
+    <None Include=".git\refs\remotes\origin\HEAD" />
+    <None Include=".git\refs\remotes\origin\main" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include=".git\objects\info\" />
+    <Folder Include=".git\refs\tags\" />
   </ItemGroup>
 
 </Project>
