@@ -1,25 +1,33 @@
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using cloudyWeatherAPI.source.db;
+using cloudyWeatherAPI.source.utils;
+
+// load our envs
+// load the environment variables
+var root = Directory.GetCurrentDirectory();
+DotEnv.Load(Path.Combine(root, ".env").ToString());
+
+var weatherService = new WeatherService();
+
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
-app.UseHttpsRedirection();
 
-app.UseAuthorization();
+// returns the current, minutely, hourly, and daily weather data
+app.MapGet("/current", async (
+    [FromQuery(Name = "lat")] string? lat,
+    [FromQuery(Name = "lon")] string? lon
+    ) => await weatherService.GetCurrent(lat, lon, true));
 
-app.MapControllers();
+// only returns the current weather only
+app.MapGet("/current-full", async (
+    [FromQuery(Name = "lat")] string? lat,
+    [FromQuery(Name = "lon")] string? lon
+    ) => await weatherService.GetCurrent(lat, lon));
+
 
 app.Run();
