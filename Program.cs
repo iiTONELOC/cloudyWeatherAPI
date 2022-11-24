@@ -3,7 +3,6 @@ using cloudyWeatherAPI.source.db;
 using cloudyWeatherAPI.source.utils;
 
 // load our envs
-// load the environment variables
 var root = Directory.GetCurrentDirectory();
 DotEnv.Load(Path.Combine(root, ".env").ToString());
 
