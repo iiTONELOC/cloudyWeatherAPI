@@ -1,5 +1,3 @@
-
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using cloudyWeatherAPI.source.db;
 using cloudyWeatherAPI.source.utils;
@@ -15,15 +13,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 
+// Auth Middleware
+app.Use((context, next) => AuthService.Authorize(context, next));
 
 
-// returns the current, minutely, hourly, and daily weather data
+// only returns the current weather only
 app.MapGet("/current", async (
     [FromQuery(Name = "lat")] string? lat,
     [FromQuery(Name = "lon")] string? lon
     ) => await weatherService.GetCurrent(lat, lon, true));
 
-// only returns the current weather only
+// returns the current, minutely, hourly, and daily weather data
 app.MapGet("/current-full", async (
     [FromQuery(Name = "lat")] string? lat,
     [FromQuery(Name = "lon")] string? lon
