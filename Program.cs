@@ -1,32 +1,35 @@
 using Microsoft.AspNetCore.Mvc;
-using cloudyWeatherAPI.source.db;
 using cloudyWeatherAPI.source.utils;
+using cloudyWeatherAPI.source.WeatherService;
 
-// load our envs
+// load our environment variables
 var root = Directory.GetCurrentDirectory();
 DotEnv.Load(Path.Combine(root, ".env").ToString());
 
+// bring in the weatherService
 var weatherService = new WeatherService();
 
+// build the app
 var builder = WebApplication.CreateBuilder(args);
-
 var app = builder.Build();
 
-// Auth Middleware
+// Attach our AuthMiddleware
 app.Use((context, next) => AuthService.Authorize(context, next));
 
+
+// ROUTES
 
 // only returns the current weather only
 app.MapGet("/current", async (
     [FromQuery(Name = "lat")] string? lat,
     [FromQuery(Name = "lon")] string? lon
-    ) => await weatherService.GetCurrent(lat, lon, true));
+    ) => await weatherService.GetCurrent(lat??"0", lon ??"0",true));
 
 // returns the current, minutely, hourly, and daily weather data
 app.MapGet("/current-full", async (
     [FromQuery(Name = "lat")] string? lat,
     [FromQuery(Name = "lon")] string? lon
-    ) => await weatherService.GetCurrent(lat, lon));
+    ) => await weatherService.GetCurrent(lat ?? "0", lon ?? "0"));
 
 
 app.Run();

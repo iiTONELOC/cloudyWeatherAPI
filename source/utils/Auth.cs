@@ -20,7 +20,7 @@
     // AuthMiddleware
     public static class AuthService
     {
-        private static readonly Auth auth = new Auth();
+        private static readonly Auth auth = new();
         public static bool IsAuthorized(string? key) => auth.IsAuthorized(key);
 
         public static Task Authorize(HttpContext context,Func<Task> next)
@@ -39,7 +39,4 @@
             return next();
         }
     }
-    
-    
 } 
-
