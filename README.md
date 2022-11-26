@@ -7,7 +7,7 @@
 
 ## Description
 
-**CloudyWeather** is a _RESTful microservice_ for my personal applications that require weather data.
+**CloudyWeather** is a _RESTful API_ for my personal applications that require weather data.
 
 With the sun setting on the Heroku free tier. I have decided to transition some of my projects to Azure. I have a few applications that utilize the OpenWeatherAPI. I decided to take this opportunity to consolidate repetitive code while expanding my knowledge of C# and cloud computing.
 
@@ -27,6 +27,7 @@ Even though a back-end isn't required to interact with the OpenWeatherAPI. I gen
 | Cloud Services Provider            | Microsoft Azure            | [Azure Cloud Computing](https://azure.microsoft.com/en-us/)                           |
 | Hosting Service                    | Azure App Service          | [App Service](https://azure.microsoft.com/en-us/pricing/details/app-service/windows/) |
 | REST API                           | Open Weather API - OneCall | [OneCall](https://openweathermap.org/api/one-call-3)                                  |
+| API Testing | Insomnia | [Insomnia Rest](https://insomnia.rest/)|
 
 ## Deployment / Usage
 
