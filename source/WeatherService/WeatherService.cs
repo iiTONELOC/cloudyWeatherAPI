@@ -27,10 +27,6 @@
         public async Task<IResult> GetCurrent(
             string lat, string lon,  bool notFull = false)
         {
-            // FIXME: Comment back in the uncommented code
-            //        While testing rate limiting I don't
-            //        want to hit the openweather api too much.
-
             try
             {
                 HttpClient httpClient = new ();                
@@ -40,7 +36,8 @@
                 {
                     // fetch data from the openweathermap api
                     using HttpResponseMessage weatherData = await httpClient
-                        .GetAsync(lat == "0" || lon == "0" ? BuildUrl(notFull) : BuildUrl(lat, lon, notFull));
+                        .GetAsync(lat == "0" || lon == "0" ? BuildUrl(notFull) : BuildUrl(
+                            lat, lon, notFull));
 
                     // store the data as a variable, we will need to manipulate it
                     var weatherResponseData = await weatherData.Content.ReadAsStringAsync();
@@ -53,9 +50,10 @@
                     return data;
                 }
 
+                var cacheType = notFull ? CacheType.basic : CacheType.full;
                 // use the API Tracker to handle our call. It will return
                 // either cached data, or data from the openweather api
-                WeatherCacheResponse data = await Tracker.HandleOpenWeatherAPICall(callback, lat, lon);
+                WeatherCacheResponse data = await Tracker.HandleOpenWeatherAPICall(callback, cacheType, lat, lon);
 
                 return Results.Ok(data);
             }

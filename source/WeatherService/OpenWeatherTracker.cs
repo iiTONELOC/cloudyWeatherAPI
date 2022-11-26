@@ -3,6 +3,11 @@
     using cloudyWeatherAPI.source.db.models;
     using static cloudyWeatherAPI.source.WeatherService.Models;
 
+    public enum CacheType { 
+        basic = 0,
+        full = 1
+    }
+
     // This class tracks the number of calls made to the openweather api
     // We are allowed 60 calls per minute, and 1,000,000 calls per month
     // Weather data isn't updated more than once every 10 minutes, so we
@@ -38,7 +43,9 @@
             minuteTimer.Enabled = true;
         }
 
-        public async Task<WeatherCacheResponse> HandleOpenWeatherAPICall(Func<Task<OneCallApiData>> callback, string? lat, string? lon)
+        // Need to track the call type
+        public async Task<WeatherCacheResponse> HandleOpenWeatherAPICall(Func<Task<OneCallApiData>> 
+            callback, CacheType method,string? lat, string? lon)
         {
             // holds our Response data that we will eventually return
             WeatherCacheResponse  Response = new ();
@@ -47,9 +54,14 @@
             {
                 // create an id we can use to check if the data is cached
                 var id = Helpers.CreateId(lat, lon);
+                
+                // add the cacheType to the id
+                id += ";" + method.ToString();
+                
                 var existingCache = Cache.Get(id);
 
                 
+
                 // Sets the found cache to the Response object.
                 void SetCacheResponse()
                 {
@@ -103,13 +115,18 @@
                 
                 // Look for a cached version
                 // if the cached version exists and is not expired return it
-                if (existingCache != null && !existingCache.IsExpired() && existingCache.ExistingData != null)
+                if (existingCache != null 
+                    && !existingCache.IsExpired() 
+                    && existingCache.ExistingData != null)
                 {                    
                     SetCacheResponse();
                 }
                 // if the cached version exists and is expired, remove it, and update
                 // OR if we don't have a requested item in the cache, make and API Call
-                else if (existingCache != null && existingCache.IsExpired() && existingCache.ExistingData != null || existingCache == null)
+                else if (existingCache != null 
+                    && existingCache.IsExpired() 
+                    && existingCache.ExistingData != null 
+                    || existingCache == null)
                 {
                     await HandleApiCall();
                 }
