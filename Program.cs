@@ -19,6 +19,9 @@ app.Use((context, next) => AuthService.Authorize(context, next));
 
 // ROUTES
 
+// Landing Demo Page
+app.MapGet("/", () => "Hello World!");
+
 // only returns the current weather only
 app.MapGet("/current", async (
     [FromQuery(Name = "lat")] string? lat,
@@ -31,5 +34,17 @@ app.MapGet("/current-full", async (
     [FromQuery(Name = "lon")] string? lon
     ) => await weatherService.GetCurrent(lat ?? "0", lon ?? "0"));
 
+
+// Demo API routes
+
+app.MapGet("/current-demo", async (
+    [FromQuery(Name = "lat")] string? lat,
+    [FromQuery(Name = "lon")] string? lon
+    ) => await weatherService.GetCurrent(lat ?? "0", lon ?? "0", true, true));
+
+app.MapGet("/current-full-demo", async (
+    [FromQuery(Name = "lat")] string? lat,
+    [FromQuery(Name = "lon")] string? lon
+    ) => await weatherService.GetCurrent(lat ?? "0", lon ?? "0", false,true));
 
 app.Run();

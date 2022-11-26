@@ -1,4 +1,4 @@
-﻿namespace cloudyWeatherAPI.source.db.models
+﻿namespace cloudyWeatherAPI.source.models
 {
     public class WeatherCacheItem
     {
@@ -19,10 +19,10 @@
         // constructor
         public OneCallApiData? ExistingData { get; set; }
 
-        public WeatherCacheItem(string id,  OneCallApiData apiData)
+        public WeatherCacheItem(string id, OneCallApiData apiData)
         {
-            double[] coords = GetLatAndLon(id);            
- 
+            double[] coords = GetLatAndLon(id);
+
             Id = id;
             Lat = coords[0];
             Lon = coords[1];
@@ -35,7 +35,7 @@
         {
             return DateTime.Now > ExpiresAt;
         }
-        
+
         static double[] GetLatAndLon(string _id)
         {
             var latAndLon = _id.Split(';');
@@ -44,7 +44,7 @@
 
             return new double[] { lat, lon };
         }
-    
+
     }
 
 
@@ -53,7 +53,7 @@
     // methods for manipulating the cache are included here.
     public class WeatherCache
     {
-        protected Dictionary<string, WeatherCacheItem> ?_weatherCache;
+        protected Dictionary<string, WeatherCacheItem>? _weatherCache;
 
         public WeatherCache()
         {
@@ -61,20 +61,21 @@
         }
 
         public void Add(WeatherCacheItem item)
-        {           
-            if (_weatherCache != null && item?.Id !=null)
+        {
+            if (_weatherCache != null && item?.Id != null)
             {
                 _weatherCache.Add(item.Id, item);
             }
         }
-        
+
         public WeatherCacheItem? Get(string id)
-        {            
+        {
             if (_weatherCache != null && id != null && _weatherCache
                 .TryGetValue(id, out WeatherCacheItem? item))
             {
                 return item;
-            }else
+            }
+            else
             {
                 return null;
             }

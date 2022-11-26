@@ -1,7 +1,6 @@
-﻿namespace cloudyWeatherAPI.source.WeatherService
+﻿namespace cloudyWeatherAPI.source.models
 {
-    using cloudyWeatherAPI.source.db.models;
-    public static class Models
+    public static class ApiResponse
     {
         public class ApiError
         {

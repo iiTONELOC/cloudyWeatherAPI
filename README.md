@@ -55,7 +55,7 @@ Data is cached for 10 minutes and unique (_doesn't currently exist in cache_) or
 
 ## Future Improvements
 
-The microservice is a functional MVP but doesn't offer a lot of flexibility at the current moment. We could make changes to accept different parameters for the units and language as the defaults cannot currently be overridden. Since this is really for my personal use, I don't have a need to make changes at the current moment, but this is something that could be improved upon in the future.
+The API is a functional MVP but doesn't offer a lot of flexibility at the current moment. We could make changes to accept different parameters for the units and language as the defaults cannot currently be overridden. Since this is really for my personal use, I don't have a need to make changes at the current moment, but this is something that could be improved upon in the future.
 
 A Landing page for demonstration purposes is currently in development and will allow for live demonstrations rather than a screenshot for reference.
 

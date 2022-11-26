@@ -1,7 +1,7 @@
 ﻿namespace cloudyWeatherAPI.source.WeatherService
 {
-    using cloudyWeatherAPI.source.db.models;
-    using static cloudyWeatherAPI.source.WeatherService.Models;
+    using cloudyWeatherAPI.source.models;
+    using static cloudyWeatherAPI.source.models.ApiResponse;
 
     public enum CacheType { 
         basic = 0,
@@ -10,13 +10,14 @@
 
     // This class tracks the number of calls made to the openweather api
     // We are allowed 60 calls per minute, and 1,000,000 calls per month
+    
+    // We have allocated some of our calls for demo purposes
+    // So we have 5 less calls per min and 1000 less calls per month
+
     // Weather data isn't updated more than once every 10 minutes, so we
     // should cache requests for 10 minutes.
     public class OpenWeatherTracker
-    {
-        private readonly int MaxCallsPerMinute = 60;
-        private readonly int MaxCallsPerMonth = 1000000;
-      
+    {      
         protected int _callsThisMinute = 0;
         protected int _callsThisMonth = 0;
         protected int _monthlyCallsRemaining;
@@ -27,9 +28,14 @@
         protected DateTime _nextReset;
 
         protected WeatherCache Cache { get; set; }
+        protected int MaxCallsPerMinute { get; set; }
+        protected int MaxCallsPerMonth { get; set; }
 
-        public OpenWeatherTracker()
+        public OpenWeatherTracker(bool isDemo=false)
         {
+             MaxCallsPerMinute = isDemo ? 5 : 55;
+             MaxCallsPerMonth = isDemo ? 1000 : 999000;
+
             _initializedAt = DateTime.Now;
             _nextReset = DateTime.Now.AddMonths(1);
             _monthlyCallsRemaining = MaxCallsPerMonth;
@@ -44,8 +50,9 @@
         }
 
         // Need to track the call type
-        public async Task<WeatherCacheResponse> HandleOpenWeatherAPICall(Func<Task<OneCallApiData>> 
-            callback, CacheType method,string? lat, string? lon)
+        public async Task<WeatherCacheResponse> HandleOpenWeatherAPICall(
+            Func<Task<OneCallApiData>> callback, CacheType method,
+            string? lat, string? lon)
         {
             // holds our Response data that we will eventually return
             WeatherCacheResponse  Response = new ();
@@ -57,10 +64,9 @@
                 
                 // add the cacheType to the id
                 id += ";" + method.ToString();
-                
-                var existingCache = Cache.Get(id);
 
-                
+                // look for an existing cache
+                var existingCache = Cache.Get(id);                
 
                 // Sets the found cache to the Response object.
                 void SetCacheResponse()
@@ -80,14 +86,13 @@
                         // we need to remove the old cache item
                         Cache.Remove(id);
                         
+                        // update the tracker
+                        UpdateTracker();
                         // here we call the callback function to get our data
                         var _data = await callback();
 
                         // update the cache
                         Cache.Add(new WeatherCacheItem(id, _data));
-
-                        // update the tracker
-                        UpdateTracker();
                         
                         Response.Data = _data;
                         Response.StatusCode = 200;
@@ -110,8 +115,7 @@
                         }
 
                     }
-                }
-                
+                }                
                 
                 // Look for a cached version
                 // if the cached version exists and is not expired return it
@@ -121,8 +125,9 @@
                 {                    
                     SetCacheResponse();
                 }
-                // if the cached version exists and is expired, remove it, and update
-                // OR if we don't have a requested item in the cache, make and API Call
+                // if the cached version exists and is expired, remove it, and
+                // update. OR if we don't have a requested item in the cache,
+                // make an API Call
                 else if (existingCache != null 
                     && existingCache.IsExpired() 
                     && existingCache.ExistingData != null 
@@ -143,7 +148,6 @@
                 }
 
                 return Response;
-
             }
             catch (Exception e)
             {
@@ -152,8 +156,8 @@
                 Response.Error = new ApiError { Code = 500, Message = e.Message };
                 return Response;
             }
-        }
-
+        }     
+        
         private bool CanMakeApiCall()
         {
             if(_monthlyCallsRemaining > 0 && _mintueCallsRemaining > 0 )
