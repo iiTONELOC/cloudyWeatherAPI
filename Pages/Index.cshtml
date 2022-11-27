@@ -1,10 +1,4 @@
 ﻿@page
-@model cloudyWeatherAPI.Pages.IndexModel
-@{
-    var key = System.Environment.GetEnvironmentVariable("DEMO_KEY");
-    ViewData["ACCESS_KEY"] = key;
-    ViewData["Title"] = "API Demo";
-}
 
 <head>
   <meta lang="en-us" />
@@ -131,7 +125,7 @@
                   headers: {
                       'Content-Type': 'application/json',
                       'Access-Control-Allow-Origin': '*',
-                      'Authorization' : `Bearer @ViewData["ACCESS_KEY"]`
+                      'Authorization' : `Bearer DEMO`
                   }
               });
               
@@ -176,8 +170,9 @@
               button.addEventListener('click', handleSubmit);
           }
       });
-      
   </script>
+
+  <title>CloudyWeatherAPI - Demo</title>
 </head>
 
 <body 
