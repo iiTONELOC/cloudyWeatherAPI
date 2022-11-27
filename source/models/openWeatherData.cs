@@ -1,4 +1,4 @@
-﻿namespace cloudyWeatherAPI.source.db.models
+﻿namespace cloudyWeatherAPI.source.models
 /// This file models the data returned by the OpenWeather OneCall API
 {
     public class WeatherCondition

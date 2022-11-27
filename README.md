@@ -33,10 +33,6 @@ Even though a back-end isn't required to interact with the OpenWeatherAPI. I gen
 
 CloudyWeather is hosted on [Azure](https://azure.microsoft.com/en-us/) using [App Services](https://azure.microsoft.com/en-us/pricing/details/app-service/windows/) and uses the free tier.
 
-The API can be accessed at [https://cloudyweatherapi.azurewebsites.net](https://cloudyweatherapi.azurewebsites.net)
-
-But access is authenticated and a valid token is required. A landing page Demo is in development and will be available soon.
-
 Searches are conducted using latitude and longitude coordinates only
 since that is what the underlying [OneCall API](https://openweathermap.org/api/one-call-3) uses to fetch data.
 
@@ -53,11 +49,13 @@ Data is cached for 10 minutes and unique (_doesn't currently exist in cache_) or
 
 ![Current-weather](./assets/images/current-weather.png)
 
+## Demo
+
+A demo API can be accessed at [https://cloudyweatherapi.azurewebsites.net](https://cloudyweatherapi.azurewebsites.net)
+
 ## Future Improvements
 
-The microservice is a functional MVP but doesn't offer a lot of flexibility at the current moment. We could make changes to accept different parameters for the units and language as the defaults cannot currently be overridden. Since this is really for my personal use, I don't have a need to make changes at the current moment, but this is something that could be improved upon in the future.
-
-A Landing page for demonstration purposes is currently in development and will allow for live demonstrations rather than a screenshot for reference.
+The API is a functional MVP but doesn't offer a lot of flexibility at the current moment. We could make changes to accept different parameters for the units and language as the defaults cannot currently be overridden. Since this is really for my personal use, I don't have a need to make changes at the current moment, but this is something that could be improved upon in the future.
 
 ## How to Contribute
 
