@@ -1,17 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-
-namespace cloudyWeatherAPI.source.utils
+﻿namespace cloudyWeatherAPI.source.utils
 {
     // can be used on its own but the AuthService class provides an
     // Authorize method that can be used as a middleware
     class Auth
     {
         private readonly string[]? ACCESS_KEYS;
+        private readonly string DEMO_KEY;
+    
+        
         public Auth()
         {
             ACCESS_KEYS = Environment
                 .GetEnvironmentVariable("AUTH_ACCESS_KEYS")?
                 .Split(";", StringSplitOptions.RemoveEmptyEntries);
+
+            DEMO_KEY = Environment.GetEnvironmentVariable("DEMO_KEY") ?? "";
         } 
 
         public bool IsAuthorized(string? key)
@@ -21,20 +24,23 @@ namespace cloudyWeatherAPI.source.utils
 
         public bool IsDemo(HttpContext _context, string? authKey)
         {
-            var DEMO_KEY = Environment
-                 .GetEnvironmentVariable("DEMO_KEY");
+            // we need to see if the auth key hash matches the demo key hash
+
+            bool validDemoKey ()
+            {
+                if (authKey == DEMO_KEY && DEMO_KEY != null) return true;
+                else return false;                
+            }
+
+
+
 
             // check if the request is for the landing page
             if (_context.Request.Path == "/"
-                && authKey == DEMO_KEY
-                && DEMO_KEY != null
                 || _context.Request.Path == "/current-demo"
-                && authKey == DEMO_KEY
-                && DEMO_KEY != null
+                && validDemoKey()         
                 || _context.Request.Path == "/current-full-demo"
-                && authKey == DEMO_KEY
-                && DEMO_KEY != null)
-
+                && validDemoKey())
             {
                 // if it is, then we can allow the request                    
                 return true;

@@ -1,0 +1,211 @@
+﻿@page
+@model cloudyWeatherAPI.Pages.IndexModel
+@{
+    var key = System.Environment.GetEnvironmentVariable("DEMO_KEY");
+    ViewData["ACCESS_KEY"] = key;
+    ViewData["Title"] = "API Demo";
+}
+
+<head>
+  <meta lang="en-us" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style type="text/css">
+      .text-shadow{
+          text-shadow: 1px 1px 1px #000000;
+      }
+  </style>
+  
+  <script type="text/javascript">
+
+      let userLocation = null;
+      let userCityState = null;
+
+       const prettyPrintJson = { 
+           toHtml: (thing) => {
+               const htmlEntities = (string) => {
+                   return string
+                   .replace(/&/g,   '&amp;')
+                   .replace(/\\"/g, '&bsol;&quot;')
+                   .replace(/</g,   '&lt;')
+                   .replace(/>/g,   '&gt;');
+               };
+               
+               const replacer = (match, p1, p2, p3, p4) => {
+                   // Converts the four parenthesized capture groups into HTML
+                   
+                   const part = { indent: p1, key: p2, value: p3, end: p4 };
+                   const key =        '<span class=text-green-500 block>';
+                   const num =        '<span class=text-yellow-500 block>';
+                   const bool =       '<span class=text-cyan-500 block>';
+                   const str =        '<span class=text-purple-500 block>';
+                   const isBool =     ['true', 'false'].includes(part.value);
+                   const isNum =      !Number.isNaN(Number(part.value));
+                   const valSpan =    isBool ? bool : isNum ? num : str;
+                   const findName =   /"([\w]+)": |(.*): /;
+                   const indentHtml = part.indent || '';
+                   const keyName =    part.key && part.key.replace(findName, '$1$2');
+                   const keyHtml =    part.key ? key + keyName + '</span>: ' : '';
+                   const valueHtml =  part.value ? valSpan + part.value + '</span>' : '';
+                   const endHtml =    part.end || '';
+                   
+                   return indentHtml + keyHtml + valueHtml + endHtml;
+               };
+               const jsonLine = /^( *)("[^"]+": )?("[^"]*"|[\w.+-]*)?([{}[\],]*)?$/mg;
+               return htmlEntities(JSON.stringify(thing, null, 3))
+               .replace(jsonLine, replacer);
+           }
+       };
+      
+      // check if the dom has loaded first
+      document.addEventListener('DOMContentLoaded', async ()=>{
+
+          window.addEventListener('resize',()=>{
+          
+              // scroll the widow down so the data is in view
+              
+              window.scrollTo(0,document.body.scrollHeight);
+          });
+          
+          async function getUsersIP(){
+              const data = await fetch("https://api.ipify.org?format=json");
+              const json = await data.json();
+              
+              return json.ip;
+          }
+          
+          async function getCoordsFromIp(ip) {
+              const data = await fetch("https://ipapi.co/" + ip + "/json/");
+              const json = await data.json();
+              
+              return json;
+          }
+
+          async function getLocationByIp(){
+             const ip = await getUsersIP();
+
+             const coords = await getCoordsFromIp(ip);
+
+             const {latitude, longitude} = coords;
+             
+             return {latitude, longitude};
+          }
+          
+          async function getCoordsFromBrowser() {
+              return new Promise((resolve, reject) => {
+                  navigator.geolocation.getCurrentPosition((position) => {
+                      resolve({
+                          latitude: position.coords.latitude,
+                          longitude: position.coords.longitude
+                      });
+                  }, (error) => {
+                      reject(null);
+                  });
+              });
+          }
+
+          async function getCityStateName(){
+              const data = await fetch(` https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLocation.latitude}&lon=${userLocation.longitude}`);
+              const json = await data.json();            
+              const {county, state} = json.address;
+
+              userCityState = {
+                  city: county,
+                  state
+               };
+          }
+
+          async function handleSubmit(e){
+              e.preventDefault();
+              e.stopPropagation();
+                           
+              const target = e.target;
+            
+              const lat =  userLocation.latitude;
+              const lon = userLocation.longitude;              
+             
+              const weatherData = await fetch(`/current-full-demo?lat=${lat}&lon=${lon}`,
+              {
+                  method: 'GET',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'Access-Control-Allow-Origin': '*',
+                      'Authorization' : `Bearer @ViewData["ACCESS_KEY"]`
+                  }
+              });
+              
+              const json = await weatherData.json();
+              
+              const weatherResultsContainer = document.querySelector('#weather-results-container');
+              const weatherResultsSectionEl = document.querySelector('#weather-results');
+              const weatherResultsEl = document.querySelector('#weather-results');
+              const cityStateDataEl = document.querySelector('#city-state');
+              weatherResultsSectionEl.classList.remove('hidden');
+              
+              
+           
+              const data = json.data;        
+              weatherResultsContainer.innerHTML = prettyPrintJson.toHtml(data);
+              
+              cityStateDataEl.innerHTML = `Showing Results for: ${userCityState.city},
+              
+              ${userCityState.state}`;
+
+              window.scrollTo(0,document.body.scrollHeight);
+          }
+          
+            
+          // Get the user's location
+          try {
+              userLocation = await getCoordsFromBrowser();
+          } catch {
+              // error occurred or location services were denied
+              console.log("Geo-location failed, getting approximate location from IP");
+              
+              userLocation = await getLocationByIp();
+          }
+          finally {
+              // get the city name from the location
+              const {latitude, longitude} = userLocation;
+              await getCityStateName();
+              
+              // update the button's text and attach the event handler
+              const button = document.getElementById('get-weather-btn');
+              button.innerText = "Get Local Weather";
+              button.addEventListener('click', handleSubmit);
+          }
+      });
+      
+  </script>
+</head>
+
+<body 
+    class="bg-zinc-900 text-gray-300 text-shadow flex flex-row flex-wrap justify-items-center content-start w-full h-full">
+    <header class=" mt-12 text-6xl font-bold text-indigo-700 w-full text-center p-3">
+        <h1> CloudyWeather <span class="text-pink-600 -ml-3">API</span> Demo </h1>
+    </header>
+  
+    <main class="w-full min-h-[65vh] overflow-hidden flex flex-wrap flex-row gap-5 justify-items-start content-center">      
+        <form
+            class="w-full lg:w-4/6 lg:m-auto p-5 grid justify-items-center ">
+            <button 
+                type="button"
+                id="get-weather-btn"
+                class="bg-gradient-to-r from-violet-500 to-emerald-600 text-gray-300 text-2xl font-bold p-3 rounded-lg text-shadow hover:scale-105 " 
+                value="getWeatherByCoords"
+            >
+                Determining Location...
+            </button>
+        </form>
+        
+        <section id="weather-results" class="w-full h-auto flex flex-col justify-items-start items-center hidden overflow-y-auto">
+            <h3 id="city-state" class="text-2xl font-bold">Results</h3>
+            
+            <pre id="weather-results-container" class="w-4/5 p-5 min-h-[150px] max-h-[65vh] bg-black rounded-lg overflow-y-auto my-8">
+                
+            </pre>
+            
+        </section>
+    </main>   
+</body>
