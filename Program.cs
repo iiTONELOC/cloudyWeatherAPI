@@ -13,8 +13,22 @@ var weatherService = new WeatherService();
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 
+// add cors
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy.WithOrigins("*")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
 
+// Add cors before the auth middleware
+app.UseCors();
 // Attach our AuthMiddleware
 app.Use((context, next) => AuthService.Authorize(context, next));
 
@@ -26,7 +40,7 @@ app.Use((context, next) => AuthService.Authorize(context, next));
 app.MapGet("/current", async (
     [FromQuery(Name = "lat")] string? lat,
     [FromQuery(Name = "lon")] string? lon
-    ) => await weatherService.GetCurrent(lat??"0", lon ??"0",true));
+    ) => await weatherService.GetCurrent(lat ?? "0", lon ?? "0", true));
 
 // returns the current, minutely, hourly, and daily weather data
 app.MapGet("/current-full", async (
@@ -45,7 +59,7 @@ app.MapGet("/current-demo", async (
 app.MapGet("/current-full-demo", async (
     [FromQuery(Name = "lat")] string? lat,
     [FromQuery(Name = "lon")] string? lon
-    ) => await weatherService.GetCurrent(lat ?? "0", lon ?? "0", false,true));
+    ) => await weatherService.GetCurrent(lat ?? "0", lon ?? "0", false, true));
 
 
 
