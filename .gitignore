@@ -392,3 +392,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Local Environment Variables
+.env
