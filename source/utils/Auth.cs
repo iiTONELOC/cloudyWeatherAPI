@@ -6,8 +6,8 @@
     {
         private readonly string[]? ACCESS_KEYS;
         private readonly string DEMO_KEY;
-    
-        
+
+
         public Auth()
         {
             ACCESS_KEYS = Environment
@@ -15,7 +15,7 @@
                 .Split(";", StringSplitOptions.RemoveEmptyEntries);
 
             DEMO_KEY = Environment.GetEnvironmentVariable("DEMO_KEY") ?? "";
-        } 
+        }
 
         public bool IsAuthorized(string? key)
         {
@@ -26,10 +26,10 @@
         {
             // we need to see if the auth key hash matches the demo key hash
 
-            bool validDemoKey ()
+            bool validDemoKey()
             {
                 if (authKey == DEMO_KEY && DEMO_KEY != null) return true;
-                else return false;                
+                else return false;
             }
 
 
@@ -38,7 +38,7 @@
             // check if the request is for the landing page
             if (_context.Request.Path == "/"
                 || _context.Request.Path == "/current-demo"
-                && validDemoKey()         
+                && validDemoKey()
                 || _context.Request.Path == "/current-full-demo"
                 && validDemoKey())
             {
@@ -60,7 +60,7 @@
         public static bool IsAuthorized(string? key) => auth
             .IsAuthorized(key);
 
-        public static Task Authorize(HttpContext context,Func<Task> next)
+        public static Task Authorize(HttpContext context, Func<Task> next)
         {
             // extract the token from the Authorization header
             // can use Bearer or just the token
@@ -78,9 +78,7 @@
                 context.Response.StatusCode = 401;
                 return context.Response.WriteAsync("Unauthorized");
             }
-           
+
         }
 
-        
-    }
-} 
+
